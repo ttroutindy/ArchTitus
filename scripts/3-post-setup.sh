@@ -90,21 +90,23 @@ echo -ne "
                     Enabling Essential Services
 -------------------------------------------------------------------------
 "
-systemctl enable cups.service
-echo "  Cups enabled"
-ntpd -qg
-systemctl enable ntpd.service
-echo "  NTP enabled"
-systemctl disable dhcpcd.service
-echo "  DHCP disabled"
-systemctl stop dhcpcd.service
-echo "  DHCP stopped"
-systemctl enable NetworkManager.service
-echo "  NetworkManager enabled"
-systemctl enable bluetooth
-echo "  Bluetooth enabled"
-systemctl enable avahi-daemon.service
-echo "  Avahi enabled"
+if [[ ! "${DESKTOP_ENV}" == "server"  ]]; then
+  systemctl enable cups.service
+  echo "  Cups enabled"
+  ntpd -qg
+  systemctl enable ntpd.service
+  echo "  NTP enabled"
+  systemctl disable dhcpcd.service
+  echo "  DHCP disabled"
+  systemctl stop dhcpcd.service
+  echo "  DHCP stopped"
+  systemctl enable NetworkManager.service
+  echo "  NetworkManager enabled"
+  systemctl enable bluetooth
+  echo "  Bluetooth enabled"
+  systemctl enable avahi-daemon.service
+  echo "  Avahi enabled"
+fi
 
 if [[ "${FS}" == "luks" || "${FS}" == "btrfs" ]]; then
 echo -ne "

@@ -19,8 +19,9 @@ echo -ne "
                     Network Setup 
 -------------------------------------------------------------------------
 "
-pacman -S --noconfirm --needed networkmanager dhclient
-systemctl enable --now NetworkManager
+#pacman -S --noconfirm --needed networkmanager dhclient iwd dhcpcd
+#systemctl enable --now NetworkManager
+pacman -S iwd wpa_supplicant dialog dhcpcd ifplugd
 echo -ne "
 -------------------------------------------------------------------------
                     Setting up mirrors for optimal download 
@@ -113,12 +114,12 @@ gpu_type=$(lspci)
 if grep -E "NVIDIA|GeForce" <<< ${gpu_type}; then
     pacman -S --noconfirm --needed nvidia
 	nvidia-xconfig
-elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
-    pacman -S --noconfirm --needed xf86-video-amdgpu
-elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
-    pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
-elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
-    pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
+# elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
+#     pacman -S --noconfirm --needed xf86-video-amdgpu
+# elif grep -E "Integrated Graphics Controller" <<< ${gpu_type}; then
+#     pacman -S --noconfirm --needed libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
+# elif grep -E "Intel Corporation UHD" <<< ${gpu_type}; then
+#     pacman -S --needed --noconfirm libva-intel-driver libvdpau-va-gl lib32-vulkan-intel vulkan-intel libva-intel-driver libva-utils lib32-mesa
 fi
 #SETUP IS WRONG THIS IS RUN
 if ! source $HOME/ArchTitus/configs/setup.conf; then
@@ -167,7 +168,7 @@ echo -ne "
 "
 if [ $(whoami) = "root"  ]; then
     groupadd libvirt
-    useradd -m -G wheel,libvirt -s /bin/bash $USERNAME 
+    useradd -m -G wheel,libvirt,audio,video -s /bin/bash $USERNAME 
     echo "$USERNAME created, home directory created, added to wheel and libvirt group, default shell set to /bin/bash"
 
 # use chpasswd to enter $USERNAME:$password
